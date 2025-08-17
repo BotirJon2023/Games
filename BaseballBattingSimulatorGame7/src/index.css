@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-500 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-blue-600;
+}
+
+/* Baseball field enhancements */
+.baseball-grass-texture {
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
+    radial-gradient(circle at 80% 50%, rgba(34, 197, 94, 0.3) 1px, transparent 1px),
+    radial-gradient(circle at 40% 20%, rgba(34, 197, 94, 0.2) 1px, transparent 1px);
+}
+
+/* Enhanced button hover effects */
+button:hover {
+  filter: brightness(1.1);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Glow effects for special elements */
+.glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.glow-green {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+}
+
+.glow-red {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* Responsive text scaling */
+@media (max-width: 640px) {
+  .responsive-text-lg {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .responsive-text-xl {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
+/* Baseball stitching effect */
+.baseball-stitching {
+  position: relative;
+}
+
+.baseball-stitching::before,
+.baseball-stitching::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: #dc2626;
+  top: 50%;
+}
+
+.baseball-stitching::before {
+  transform: rotate(45deg);
+}
+
+.baseball-stitching::after {
+  transform: rotate(-45deg);
+}
+
+/* Performance optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
