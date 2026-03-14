@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, #7cb342 0%, #558b2f 60%, #3d6b1f 100%);
+}
+
+.walking-character {
+  filter: drop-shadow(8px 15px 20px rgba(0, 0, 0, 0.3));
+  animation: walkingMotion 1.2s ease-in-out infinite;
+}
+
+.walking-group {
+  transform-origin: 60px 150px;
+  transform-box: fill-box;
+}
+
+.hair-element {
+  animation: hairSwing 1.2s ease-in-out infinite;
+  transform-origin: 60px 25px;
+}
+
+.arm-left-group {
+  animation: armLeftSwing 1.2s ease-in-out infinite;
+  transform-origin: 40px 60px;
+}
+
+.arm-right-group {
+  animation: armRightSwing 1.2s ease-in-out infinite;
+  transform-origin: 80px 60px;
+}
+
+.leg-left-group {
+  animation: legLeftSwing 1.2s ease-in-out infinite;
+  transform-origin: 48px 120px;
+}
+
+.leg-right-group {
+  animation: legRightSwing 1.2s ease-in-out infinite;
+  transform-origin: 72px 120px;
+}
+
+@keyframes walkingMotion {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  25% {
+    transform: translateY(-12px) scaleY(0.98);
+  }
+  50% {
+    transform: translateY(0) scaleY(1);
+  }
+  75% {
+    transform: translateY(-12px) scaleY(0.98);
+  }
+}
+
+@keyframes hairSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes armLeftSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-45deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes armRightSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(35deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-40deg);
+  }
+}
+
+@keyframes legLeftSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-55deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(40deg);
+  }
+}
+
+@keyframes legRightSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(45deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-50deg);
+  }
+}
