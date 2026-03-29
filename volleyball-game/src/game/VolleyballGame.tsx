@@ -1,29 +1,34 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 500;
-const GROUND_Y = 420;
+const CANVAS_HEIGHT = 450;
+const GROUND_Y = 380;
 const NET_X = CANVAS_WIDTH / 2;
 const NET_HEIGHT = 120;
-const PLAYER_RADIUS = 28;
-const BALL_RADIUS = 18;
+const PLAYER_WIDTH = 40;
+const PLAYER_HEIGHT = 60;
+const BALL_RADIUS = 16;
 const GRAVITY = 0.45;
-const PLAYER_SPEED = 5.5;
 const JUMP_FORCE = -13;
+const PLAYER_SPEED = 5;
+const BALL_DAMPING = 0.7;
 const MAX_SCORE = 7;
+
+type GameMode = "menu" | "2player" | "vs-computer" | "gameover";
 
 interface Player {
   x: number;
   y: number;
-  vy: number;
   vx: number;
+  vy: number;
   onGround: boolean;
   score: number;
+  side: "left" | "right";
   color: string;
   name: string;
-  side: "left" | "right";
   hitting: boolean;
   hitTimer: number;
+  facingRight: boolean;
 }
 
 interface Ball {
@@ -31,689 +36,810 @@ interface Ball {
   y: number;
   vx: number;
   vy: number;
+  spin: number;
+  trail: { x: number; y: number }[];
 }
 
-interface Keys {
-  [key: string]: boolean;
+function makePlayer(side: "left" | "right", name: string, color: string): Player {
+  return {
+    x: side === "left" ? 200 : 600,
+    y: GROUND_Y - PLAYER_HEIGHT,
+    vx: 0,
+    vy: 0,
+    onGround: true,
+    score: 0,
+    side,
+    color,
+    name,
+    hitting: false,
+    hitTimer: 0,
+    facingRight: side === "left",
+  };
 }
 
-type GameMode = "menu" | "2player" | "vscomputer" | "gameover";
+function makeBall(side: "left" | "right"): Ball {
+  return {
+    x: side === "left" ? 200 : 600,
+    y: GROUND_Y - 120,
+    vx: side === "left" ? 3 : -3,
+    vy: -5,
+    spin: 0,
+    trail: [],
+  };
+}
 
-function drawBeachBackground(ctx: CanvasRenderingContext2D, time: number) {
-  // Sky gradient
+function drawBackground(ctx: CanvasRenderingContext2D) {
+  // Sky gradient - NYC blue
   const skyGrad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
-  skyGrad.addColorStop(0, "#1a6fb5");
-  skyGrad.addColorStop(0.5, "#4db8f5");
-  skyGrad.addColorStop(1, "#87CEEB");
+  skyGrad.addColorStop(0, "#87CEEB");
+  skyGrad.addColorStop(1, "#B0E0FF");
   ctx.fillStyle = skyGrad;
   ctx.fillRect(0, 0, CANVAS_WIDTH, GROUND_Y);
 
-  // Sun
-  const sunX = 680;
-  const sunY = 60;
-  const sunGlow = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 50);
-  sunGlow.addColorStop(0, "rgba(255,230,100,1)");
-  sunGlow.addColorStop(0.5, "rgba(255,200,50,0.7)");
-  sunGlow.addColorStop(1, "rgba(255,180,0,0)");
-  ctx.fillStyle = sunGlow;
-  ctx.beginPath();
-  ctx.arc(sunX, sunY, 50, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = "#FFE566";
-  ctx.beginPath();
-  ctx.arc(sunX, sunY, 28, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Clouds
-  const clouds = [
-    { x: 80, y: 55, w: 90 },
-    { x: 250, y: 40, w: 70 },
-    { x: 450, y: 65, w: 80 },
+  // NYC skyline silhouette
+  ctx.fillStyle = "rgba(30, 30, 60, 0.55)";
+  const buildings = [
+    { x: 0, w: 60, h: 120 },
+    { x: 65, w: 40, h: 90 },
+    { x: 110, w: 50, h: 150 },
+    { x: 165, w: 35, h: 100 },
+    { x: 205, w: 45, h: 130 },
+    { x: 255, w: 55, h: 80 },
+    { x: 580, w: 55, h: 80 },
+    { x: 640, w: 45, h: 130 },
+    { x: 690, w: 35, h: 100 },
+    { x: 730, w: 50, h: 150 },
+    { x: 785, w: 40, h: 90 },
+    { x: 730, w: 60, h: 120 },
   ];
-  clouds.forEach((cloud) => {
-    const cx = cloud.x + Math.sin(time * 0.0003 + cloud.x) * 8;
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.beginPath();
-    ctx.ellipse(cx, cloud.y, cloud.w, 22, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(cx - 20, cloud.y + 6, 35, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(cx + 25, cloud.y + 5, 38, 17, 0, 0, Math.PI * 2);
-    ctx.fill();
+  buildings.forEach((b) => {
+    ctx.fillRect(b.x, GROUND_Y - b.h, b.w, b.h);
+    // Windows
+    ctx.fillStyle = "rgba(255, 255, 180, 0.7)";
+    for (let wx = b.x + 6; wx < b.x + b.w - 6; wx += 10) {
+      for (let wy = GROUND_Y - b.h + 10; wy < GROUND_Y - 10; wy += 14) {
+        if (Math.random() > 0.3) ctx.fillRect(wx, wy, 5, 7);
+      }
+    }
+    ctx.fillStyle = "rgba(30, 30, 60, 0.55)";
   });
 
-  // Ocean - animated waves
-  const oceanGrad = ctx.createLinearGradient(0, GROUND_Y - 80, 0, GROUND_Y);
-  oceanGrad.addColorStop(0, "#0077cc");
-  oceanGrad.addColorStop(1, "#005599");
-  ctx.fillStyle = oceanGrad;
-  ctx.beginPath();
-  ctx.moveTo(0, GROUND_Y - 60);
-  for (let x = 0; x <= CANVAS_WIDTH; x += 10) {
-    const wave1 = Math.sin((x * 0.02) + time * 0.002) * 8;
-    const wave2 = Math.sin((x * 0.04) + time * 0.003) * 4;
-    ctx.lineTo(x, GROUND_Y - 60 + wave1 + wave2);
-  }
-  ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
-  ctx.lineTo(0, CANVAS_HEIGHT);
-  ctx.closePath();
-  ctx.fill();
+  // Ground - sand/concrete court
+  const groundGrad = ctx.createLinearGradient(0, GROUND_Y, 0, CANVAS_HEIGHT);
+  groundGrad.addColorStop(0, "#D2B48C");
+  groundGrad.addColorStop(0.3, "#C19A6B");
+  groundGrad.addColorStop(1, "#A0785A");
+  ctx.fillStyle = groundGrad;
+  ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_Y);
 
-  // Wave highlights
-  ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  // Court lines
+  ctx.strokeStyle = "rgba(255,255,255,0.6)";
   ctx.lineWidth = 2;
-  for (let w = 0; w < 3; w++) {
-    ctx.beginPath();
-    for (let x = 0; x <= CANVAS_WIDTH; x += 10) {
-      const wave = Math.sin((x * 0.02) + time * 0.002 + w * 1.5) * 6;
-      if (x === 0) ctx.moveTo(x, GROUND_Y - 60 + wave + w * 5);
-      else ctx.lineTo(x, GROUND_Y - 60 + wave + w * 5);
-    }
-    ctx.stroke();
-  }
-
-  // Sand
-  const sandGrad = ctx.createLinearGradient(0, GROUND_Y - 20, 0, CANVAS_HEIGHT);
-  sandGrad.addColorStop(0, "#f4c877");
-  sandGrad.addColorStop(0.3, "#e8b65a");
-  sandGrad.addColorStop(1, "#d4934a");
-  ctx.fillStyle = sandGrad;
-  ctx.fillRect(0, GROUND_Y - 15, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_Y + 15);
-
-  // Sand texture dots
-  ctx.fillStyle = "rgba(180,130,60,0.3)";
-  for (let i = 0; i < 60; i++) {
-    const sx = (i * 97) % CANVAS_WIDTH;
-    const sy = GROUND_Y + 5 + ((i * 37) % 60);
-    ctx.beginPath();
-    ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Palm tree (decorative)
-  drawPalmTree(ctx, 50, GROUND_Y - 5);
-  drawPalmTree(ctx, 750, GROUND_Y - 5);
-
-  // Seagulls
-  drawSeagulls(ctx, time);
-}
-
-function drawPalmTree(ctx: CanvasRenderingContext2D, x: number, y: number) {
-  ctx.strokeStyle = "#7a5230";
-  ctx.lineWidth = 8;
-  ctx.lineCap = "round";
+  ctx.setLineDash([]);
   ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.quadraticCurveTo(x + 10, y - 60, x + 5, y - 110);
+  ctx.moveTo(50, GROUND_Y);
+  ctx.lineTo(50, GROUND_Y + 10);
+  ctx.moveTo(750, GROUND_Y);
+  ctx.lineTo(750, GROUND_Y + 10);
   ctx.stroke();
 
-  const leaves = [
-    { angle: -60, len: 55 },
-    { angle: -30, len: 50 },
-    { angle: 0, len: 45 },
-    { angle: 30, len: 52 },
-    { angle: 60, len: 48 },
-    { angle: 90, len: 42 },
-  ];
-  ctx.strokeStyle = "#2d7a2d";
-  ctx.lineWidth = 5;
-  leaves.forEach((leaf) => {
-    ctx.beginPath();
-    const rad = (leaf.angle - 90) * (Math.PI / 180);
-    ctx.moveTo(x + 5, y - 110);
-    ctx.lineTo(
-      x + 5 + Math.cos(rad) * leaf.len,
-      y - 110 + Math.sin(rad) * leaf.len
-    );
-    ctx.stroke();
-  });
-}
+  // Center line dashes
+  ctx.setLineDash([8, 6]);
+  ctx.beginPath();
+  ctx.moveTo(NET_X, GROUND_Y);
+  ctx.lineTo(NET_X, CANVAS_HEIGHT);
+  ctx.stroke();
+  ctx.setLineDash([]);
 
-function drawSeagulls(ctx: CanvasRenderingContext2D, time: number) {
-  const birds = [
-    { bx: 150, by: 80, phase: 0 },
-    { bx: 320, by: 100, phase: 1.5 },
-    { bx: 500, by: 70, phase: 3 },
-  ];
-  ctx.strokeStyle = "rgba(50,50,50,0.7)";
-  ctx.lineWidth = 1.5;
-  birds.forEach((bird) => {
-    const bx = bird.bx + Math.sin(time * 0.0004 + bird.phase) * 20;
-    const by = bird.by + Math.sin(time * 0.0008 + bird.phase) * 5;
-    const wingAmp = Math.sin(time * 0.006 + bird.phase) * 8;
-    ctx.beginPath();
-    ctx.moveTo(bx - 12, by);
-    ctx.quadraticCurveTo(bx - 6, by - wingAmp, bx, by);
-    ctx.quadraticCurveTo(bx + 6, by - wingAmp, bx + 12, by);
-    ctx.stroke();
-  });
+  // Baseline
+  ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(50, GROUND_Y + 2);
+  ctx.lineTo(750, GROUND_Y + 2);
+  ctx.stroke();
 }
 
 function drawNet(ctx: CanvasRenderingContext2D) {
-  // Net pole
-  ctx.strokeStyle = "#ccc";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(NET_X, GROUND_Y);
-  ctx.lineTo(NET_X, GROUND_Y - NET_HEIGHT - 10);
-  ctx.stroke();
+  const netTop = GROUND_Y - NET_HEIGHT;
 
-  // Net band top
-  ctx.strokeStyle = "#fff";
-  ctx.lineWidth = 6;
+  // Net post left
+  ctx.fillStyle = "#888";
   ctx.beginPath();
-  ctx.moveTo(NET_X - 3, GROUND_Y - NET_HEIGHT);
-  ctx.lineTo(NET_X + 3, GROUND_Y - NET_HEIGHT);
-  ctx.stroke();
+  ctx.roundRect(NET_X - 4, netTop - 8, 8, NET_HEIGHT + 8, 3);
+  ctx.fill();
+
+  // Net post right shadow
+  ctx.fillStyle = "#555";
+  ctx.fillRect(NET_X - 4, netTop, 8, 4);
 
   // Net mesh
-  ctx.strokeStyle = "rgba(255,255,255,0.7)";
-  ctx.lineWidth = 1;
-  const netLeft = NET_X - 3;
-  const netRight = NET_X + 3;
-  const netTop = GROUND_Y - NET_HEIGHT;
-  const netBottom = GROUND_Y;
+  ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.lineWidth = 1.5;
 
-  // Vertical lines
-  for (let nx = netLeft; nx <= netRight; nx += 6) {
+  // Vertical strings
+  for (let x = NET_X - 2; x <= NET_X + 2; x += 2) {
     ctx.beginPath();
-    ctx.moveTo(nx, netTop);
-    ctx.lineTo(nx, netBottom);
-    ctx.stroke();
-  }
-  // Horizontal lines
-  for (let ny = netTop; ny <= netBottom; ny += 10) {
-    ctx.beginPath();
-    ctx.moveTo(netLeft, ny);
-    ctx.lineTo(netRight, ny);
+    ctx.moveTo(x, netTop);
+    ctx.lineTo(x, GROUND_Y);
     ctx.stroke();
   }
 
-  // Net white bands
-  ctx.fillStyle = "white";
-  ctx.fillRect(netLeft - 2, netTop - 3, netRight - netLeft + 4, 6);
-  ctx.fillRect(netLeft - 2, netBottom - 3, netRight - netLeft + 4, 6);
+  // Horizontal strings
+  for (let y = netTop; y <= GROUND_Y; y += 12) {
+    ctx.beginPath();
+    ctx.moveTo(NET_X - 3, y);
+    ctx.lineTo(NET_X + 3, y);
+    ctx.stroke();
+  }
+
+  // Net top tape
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(NET_X - 4, netTop - 4, 8, 6);
 }
 
-function drawPlayer(ctx: CanvasRenderingContext2D, player: Player) {
-  const { x, y, color, hitting } = player;
+function drawPlayer(ctx: CanvasRenderingContext2D, p: Player) {
+  ctx.save();
+  const cx = p.x + PLAYER_WIDTH / 2;
+  const cy = p.y;
 
   // Shadow
   ctx.fillStyle = "rgba(0,0,0,0.2)";
   ctx.beginPath();
-  ctx.ellipse(x, GROUND_Y + 4, PLAYER_RADIUS * 0.9, 8, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, GROUND_Y + 4, 22, 6, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Body (swimsuit)
-  const bodyGrad = ctx.createRadialGradient(x - 5, y - 5, 2, x, y, PLAYER_RADIUS);
-  bodyGrad.addColorStop(0, lightenColor(color, 40));
-  bodyGrad.addColorStop(1, color);
+  // Hit effect
+  if (p.hitting) {
+    ctx.strokeStyle = p.color;
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = p.hitTimer / 8;
+    ctx.beginPath();
+    ctx.arc(cx, cy + PLAYER_HEIGHT / 2, 30 + (8 - p.hitTimer) * 3, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // Body
+  const bodyGrad = ctx.createLinearGradient(p.x, cy, p.x + PLAYER_WIDTH, cy + PLAYER_HEIGHT);
+  bodyGrad.addColorStop(0, p.color);
+  bodyGrad.addColorStop(1, shadeColor(p.color, -30));
   ctx.fillStyle = bodyGrad;
   ctx.beginPath();
-  ctx.arc(x, y, PLAYER_RADIUS, 0, Math.PI * 2);
+  ctx.roundRect(p.x + 4, cy + 22, PLAYER_WIDTH - 8, PLAYER_HEIGHT - 22, [6, 6, 4, 4]);
   ctx.fill();
 
-  // Body highlight
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  ctx.beginPath();
-  ctx.ellipse(x - 6, y - 8, 10, 7, -0.5, 0, Math.PI * 2);
-  ctx.fill();
+  // Jersey number
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  ctx.font = "bold 14px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(p.side === "left" ? "1" : "2", cx, cy + 44);
 
-  // Face
+  // Head
   ctx.fillStyle = "#FDBCB4";
   ctx.beginPath();
-  ctx.arc(x, y - 6, 13, 0, Math.PI * 2);
+  ctx.arc(cx, cy + 14, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hair
+  ctx.fillStyle = p.side === "left" ? "#4A2C0A" : "#1A1A3E";
+  ctx.beginPath();
+  ctx.arc(cx, cy + 14, 14, Math.PI, Math.PI * 2);
   ctx.fill();
 
   // Eyes
-  ctx.fillStyle = "#333";
+  const eyeOffX = p.facingRight ? 4 : -4;
+  ctx.fillStyle = "#fff";
   ctx.beginPath();
-  ctx.arc(x - 4, y - 8, 2, 0, Math.PI * 2);
-  ctx.arc(x + 4, y - 8, 2, 0, Math.PI * 2);
+  ctx.ellipse(cx + eyeOffX - 3, cy + 13, 3, 3.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(cx + eyeOffX + 3, cy + 13, 3, 3.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Smile
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 1.5;
+  ctx.fillStyle = "#333";
   ctx.beginPath();
-  ctx.arc(x, y - 4, 5, 0.2, Math.PI - 0.2);
-  ctx.stroke();
+  ctx.arc(cx + eyeOffX - 3, cy + 13, 1.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(cx + eyeOffX + 3, cy + 13, 1.5, 0, Math.PI * 2);
+  ctx.fill();
 
-  // Arm animation when hitting
-  if (hitting) {
-    const armAngle = player.side === "left" ? -0.5 : 0.5;
-    ctx.strokeStyle = "#FDBCB4";
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
+  // Arms - hitting pose
+  ctx.strokeStyle = "#FDBCB4";
+  ctx.lineWidth = 7;
+  ctx.lineCap = "round";
+  if (p.hitting) {
+    // Raised arm
+    const armDir = p.facingRight ? 1 : -1;
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(
-      x + Math.cos(armAngle) * 30,
-      y + Math.sin(armAngle) * -25
-    );
+    ctx.moveTo(cx - armDir * 6, cy + 28);
+    ctx.lineTo(cx + armDir * 18, cy + 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + armDir * 6, cy + 28);
+    ctx.lineTo(cx - armDir * 10, cy + 36);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, cy + 28);
+    ctx.lineTo(cx - 16, cy + 42);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + 6, cy + 28);
+    ctx.lineTo(cx + 16, cy + 42);
     ctx.stroke();
   }
 
-  // Player name label
-  ctx.fillStyle = "rgba(0,0,0,0.6)";
+  // Legs
+  ctx.strokeStyle = p.color;
+  ctx.lineWidth = 9;
+  if (!p.onGround) {
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, cy + PLAYER_HEIGHT - 5);
+    ctx.lineTo(cx - 12, cy + PLAYER_HEIGHT + 10);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + 5, cy + PLAYER_HEIGHT - 5);
+    ctx.lineTo(cx + 14, cy + PLAYER_HEIGHT + 10);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, cy + PLAYER_HEIGHT - 5);
+    ctx.lineTo(cx - 8, GROUND_Y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + 5, cy + PLAYER_HEIGHT - 5);
+    ctx.lineTo(cx + 8, GROUND_Y);
+    ctx.stroke();
+  }
+
+  // Name label
+  ctx.fillStyle = "rgba(0,0,0,0.7)";
+  ctx.fillRect(cx - 24, cy - 20, 48, 18);
+  ctx.fillStyle = "#fff";
   ctx.font = "bold 11px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(player.name, x, y + PLAYER_RADIUS + 14);
-}
+  ctx.fillText(p.name, cx, cy - 6);
 
-function lightenColor(hex: string, amount: number): string {
-  const num = parseInt(hex.replace("#", ""), 16);
-  const r = Math.min(255, (num >> 16) + amount);
-  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
-  const b = Math.min(255, (num & 0xff) + amount);
-  return `rgb(${r},${g},${b})`;
+  ctx.restore();
 }
 
 function drawBall(ctx: CanvasRenderingContext2D, ball: Ball) {
+  // Trail
+  ball.trail.forEach((t, i) => {
+    const alpha = (i / ball.trail.length) * 0.35;
+    const r = BALL_RADIUS * (i / ball.trail.length) * 0.7;
+    ctx.fillStyle = `rgba(255, 220, 50, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
   // Shadow
-  ctx.fillStyle = "rgba(0,0,0,0.15)";
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
   ctx.beginPath();
-  ctx.ellipse(ball.x, GROUND_Y + 5, BALL_RADIUS * 0.8, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(ball.x, GROUND_Y + 5, 14, 5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Ball
-  const ballGrad = ctx.createRadialGradient(
-    ball.x - 5, ball.y - 5, 2,
-    ball.x, ball.y, BALL_RADIUS
-  );
-  ballGrad.addColorStop(0, "#ffffff");
-  ballGrad.addColorStop(0.4, "#DDEEFF");
-  ballGrad.addColorStop(1, "#88BBEE");
+  // Ball glow
+  const glow = ctx.createRadialGradient(ball.x - 4, ball.y - 4, 2, ball.x, ball.y, BALL_RADIUS + 4);
+  glow.addColorStop(0, "rgba(255,255,200,0.3)");
+  glow.addColorStop(1, "rgba(255,200,0,0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, BALL_RADIUS + 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ball body
+  const ballGrad = ctx.createRadialGradient(ball.x - 5, ball.y - 5, 2, ball.x, ball.y, BALL_RADIUS);
+  ballGrad.addColorStop(0, "#FFF176");
+  ballGrad.addColorStop(0.5, "#FFD700");
+  ballGrad.addColorStop(1, "#E65100");
   ctx.fillStyle = ballGrad;
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
   ctx.fill();
 
-  // Ball seam lines
-  ctx.strokeStyle = "rgba(100,150,200,0.4)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, BALL_RADIUS, 0.2, Math.PI + 0.2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, BALL_RADIUS, -Math.PI / 2 + 0.2, Math.PI / 2 - 0.2);
-  ctx.stroke();
+  // Panel lines
+  ctx.strokeStyle = "rgba(180,80,0,0.5)";
+  ctx.lineWidth = 1.2;
+  ctx.save();
+  ctx.translate(ball.x, ball.y);
+  ctx.rotate(ball.spin);
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.arc(0, 0, BALL_RADIUS, (i / 5) * Math.PI * 2, (i / 5 + 0.15) * Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
 
-  // Shine
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  // Highlight
+  ctx.fillStyle = "rgba(255,255,255,0.45)";
   ctx.beginPath();
-  ctx.ellipse(ball.x - 5, ball.y - 6, 5, 3, -0.5, 0, Math.PI * 2);
+  ctx.ellipse(ball.x - 5, ball.y - 5, 5, 3, -0.5, 0, Math.PI * 2);
   ctx.fill();
 }
 
-function drawScore(ctx: CanvasRenderingContext2D, p1: Player, p2: Player) {
-  // Score panel
-  ctx.fillStyle = "rgba(0,0,0,0.4)";
+function shadeColor(hex: string, amount: number): string {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0xff) + amount));
+  const b = Math.max(0, Math.min(255, (num & 0xff) + amount));
+  return `rgb(${r},${g},${b})`;
+}
+
+function drawHUD(ctx: CanvasRenderingContext2D, p1: Player, p2: Player, mode: string) {
+  // Score panel background
+  ctx.fillStyle = "rgba(0,0,0,0.55)";
   ctx.beginPath();
-  ctx.roundRect(CANVAS_WIDTH / 2 - 100, 8, 200, 40, 8);
+  ctx.roundRect(CANVAS_WIDTH / 2 - 100, 10, 200, 54, 12);
   ctx.fill();
 
-  ctx.fillStyle = "#fff";
-  ctx.font = "bold 26px Arial";
+  // NYC crown
+  ctx.fillStyle = "#FFD700";
+  ctx.font = "bold 11px Arial";
   ctx.textAlign = "center";
-  ctx.fillText(`${p1.score}`, CANVAS_WIDTH / 2 - 35, 38);
-  ctx.fillText(":", CANVAS_WIDTH / 2, 38);
-  ctx.fillText(`${p2.score}`, CANVAS_WIDTH / 2 + 35, 38);
+  ctx.fillText("🏐 NYC VOLLEYBALL", CANVAS_WIDTH / 2, 26);
 
-  // Player labels under score
-  ctx.font = "11px Arial";
+  // Scores
+  ctx.font = "bold 28px Arial";
   ctx.fillStyle = p1.color;
-  ctx.fillText(p1.name, CANVAS_WIDTH / 2 - 35, 52);
+  ctx.textAlign = "right";
+  ctx.fillText(String(p1.score), CANVAS_WIDTH / 2 - 18, 54);
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.font = "bold 20px Arial";
+  ctx.fillText(":", CANVAS_WIDTH / 2, 52);
+  ctx.font = "bold 28px Arial";
   ctx.fillStyle = p2.color;
-  ctx.fillText(p2.name, CANVAS_WIDTH / 2 + 35, 52);
+  ctx.textAlign = "left";
+  ctx.fillText(String(p2.score), CANVAS_WIDTH / 2 + 18, 54);
+
+  // Player name labels
+  ctx.font = "12px Arial";
+  ctx.fillStyle = p1.color;
+  ctx.textAlign = "left";
+  ctx.fillText(p1.name, 14, 28);
+  ctx.fillStyle = p2.color;
+  ctx.textAlign = "right";
+  ctx.fillText(p2.name, CANVAS_WIDTH - 14, 28);
+
+  // Mode badge
+  ctx.fillStyle = "rgba(255,255,255,0.15)";
+  ctx.beginPath();
+  ctx.roundRect(CANVAS_WIDTH - 110, 10, 100, 22, 6);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.font = "10px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(mode === "vs-computer" ? "VS COMPUTER" : "2 PLAYERS", CANVAS_WIDTH - 60, 25);
 }
 
-function drawControls(ctx: CanvasRenderingContext2D, mode: GameMode) {
-  ctx.fillStyle = "rgba(0,0,0,0.35)";
-  ctx.font = "12px Arial";
+function drawControls(ctx: CanvasRenderingContext2D, mode: string) {
+  ctx.fillStyle = "rgba(0,0,0,0.45)";
+  ctx.beginPath();
+  ctx.roundRect(8, CANVAS_HEIGHT - 52, 180, 44, 8);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.font = "10px Arial";
   ctx.textAlign = "left";
+  ctx.fillText("Player 1: A/D=Move  W=Jump", 16, CANVAS_HEIGHT - 36);
+  ctx.fillText("Space/S = Hit", 16, CANVAS_HEIGHT - 22);
 
   if (mode === "2player") {
-    ctx.fillText("P1: A/D Move, W Jump", 8, 480);
-    ctx.fillText("P2: ←/→ Move, ↑ Jump", 520, 480);
-  } else {
-    ctx.fillText("Player: A/D Move, W Jump", 8, 480);
-    ctx.fillText("Computer controls right side", 480, 480);
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    ctx.beginPath();
+    ctx.roundRect(CANVAS_WIDTH - 188, CANVAS_HEIGHT - 52, 180, 44, 8);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText("Player 2: ←/→=Move  ↑=Jump", CANVAS_WIDTH - 16, CANVAS_HEIGHT - 36);
+    ctx.fillText("Enter/↓ = Hit", CANVAS_WIDTH - 16, CANVAS_HEIGHT - 22);
   }
 }
 
-function initBall(lastScorer: "left" | "right" | null): Ball {
-  const side = lastScorer === "right" ? "left" : "right";
-  return {
-    x: side === "left" ? 200 : 600,
-    y: GROUND_Y - 120,
-    vx: side === "left" ? 2 : -2,
-    vy: -6,
-  };
+function clamp(v: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, v));
 }
 
-function initPlayer(side: "left" | "right", name: string, color: string): Player {
-  return {
-    x: side === "left" ? 200 : 600,
-    y: GROUND_Y - PLAYER_RADIUS,
-    vy: 0,
-    vx: 0,
-    onGround: true,
-    score: 0,
-    color,
-    name,
-    side,
-    hitting: false,
-    hitTimer: 0,
-  };
-}
-
-interface VolleyballGameProps {
-  mode: "2player" | "vscomputer";
-  onBack: () => void;
-}
-
-export default function VolleyballGame({ mode, onBack }: VolleyballGameProps) {
+export default function VolleyballGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stateRef = useRef({
-    p1: initPlayer("left", "Player 1", "#e74c3c"),
-    p2: initPlayer("right", mode === "2player" ? "Player 2" : "Computer", "#2980b9"),
-    ball: initBall(null),
-    keys: {} as Keys,
-    time: 0,
-    paused: false,
-    winner: null as string | null,
-    serving: true,
-    serveTimer: 60,
-  });
-  const animRef = useRef<number>(0);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [gameMode, setGameMode] = useState<GameMode>("menu");
+  const [winner, setWinner] = useState<string>("");
+  const stateRef = useRef<{
+    p1: Player;
+    p2: Player;
+    ball: Ball;
+    keys: Set<string>;
+    serving: "left" | "right";
+    rallyActive: boolean;
+    frameCount: number;
+    pointDelay: number;
+    mode: GameMode;
+    particles: { x: number; y: number; vx: number; vy: number; color: string; life: number }[];
+  } | null>(null);
+  const animFrameRef = useRef<number>(0);
 
-  const resetRound = useCallback((scorer: "left" | "right") => {
-    const s = stateRef.current;
-    s.ball = initBall(scorer);
-    s.p1.x = 200; s.p1.y = GROUND_Y - PLAYER_RADIUS; s.p1.vy = 0; s.p1.vx = 0; s.p1.onGround = true; s.p1.hitting = false;
-    s.p2.x = 600; s.p2.y = GROUND_Y - PLAYER_RADIUS; s.p2.vy = 0; s.p2.vx = 0; s.p2.onGround = true; s.p2.hitting = false;
-    s.serving = true;
-    s.serveTimer = 90;
+  const startGame = useCallback((mode: "2player" | "vs-computer") => {
+    const p1 = makePlayer("left", "Player 1", "#FF6B35");
+    const p2 = makePlayer("right", mode === "vs-computer" ? "CPU" : "Player 2", "#4ECDC4");
+    stateRef.current = {
+      p1,
+      p2,
+      ball: makeBall("left"),
+      keys: new Set(),
+      serving: "left",
+      rallyActive: false,
+      frameCount: 0,
+      pointDelay: 0,
+      mode,
+      particles: [],
+    };
+    setGameMode(mode);
+    setWinner("");
   }, []);
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent, down: boolean) => {
-      stateRef.current.keys[e.code] = down;
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) {
+    if (gameMode !== "2player" && gameMode !== "vs-computer") return;
+
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const state = stateRef.current!;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      state.keys.add(e.key);
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
         e.preventDefault();
       }
     };
-    window.addEventListener("keydown", (e) => handleKey(e, true));
-    window.addEventListener("keyup", (e) => handleKey(e, false));
-    return () => {
-      window.removeEventListener("keydown", (e) => handleKey(e, true));
-      window.removeEventListener("keyup", (e) => handleKey(e, false));
-    };
-  }, []);
+    const handleKeyUp = (e: KeyboardEvent) => state.keys.delete(e.key);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
-    const updatePlayer = (p: Player, left: boolean, right: boolean, jump: boolean) => {
-      if (left) p.vx = Math.max(p.vx - 1.5, -PLAYER_SPEED);
-      else if (right) p.vx = Math.min(p.vx + 1.5, PLAYER_SPEED);
-      else p.vx *= 0.75;
-
-      if (jump && p.onGround) {
-        p.vy = JUMP_FORCE;
-        p.onGround = false;
+    function spawnParticles(x: number, y: number, color: string, count = 10) {
+      for (let i = 0; i < count; i++) {
+        state.particles.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.5) * 8 - 4,
+          color,
+          life: 30,
+        });
       }
+    }
 
-      p.vy += GRAVITY;
-      p.x += p.vx;
-      p.y += p.vy;
+    function tryHit(player: Player, ball: Ball, power = 1): boolean {
+      const bx = ball.x;
+      const by = ball.y;
+      const px = player.x + PLAYER_WIDTH / 2;
+      const py = player.y + PLAYER_HEIGHT / 2;
+      const dist = Math.hypot(bx - px, by - py);
+      if (dist < PLAYER_WIDTH + BALL_RADIUS + 8) {
+        const angle = Math.atan2(by - py, bx - px);
+        const speed = 10 * power;
+        ball.vx = Math.cos(angle) * speed;
+        ball.vy = Math.sin(angle) * speed - 4;
+        ball.spin = ball.vx * 0.1;
 
-      // Ground collision
-      if (p.y >= GROUND_Y - PLAYER_RADIUS) {
-        p.y = GROUND_Y - PLAYER_RADIUS;
-        p.vy = 0;
-        p.onGround = true;
+        // Push away from net
+        if (player.side === "left" && ball.vx < 2) ball.vx = 5 + Math.random() * 3;
+        if (player.side === "right" && ball.vx > -2) ball.vx = -(5 + Math.random() * 3);
+
+        player.hitting = true;
+        player.hitTimer = 8;
+        spawnParticles(ball.x, ball.y, "#FFD700", 8);
+        return true;
       }
+      return false;
+    }
 
-      // Side constraints based on side
-      if (p.side === "left") {
-        p.x = Math.max(PLAYER_RADIUS + 5, Math.min(NET_X - PLAYER_RADIUS - 5, p.x));
+    function computerAI(p2: Player, ball: Ball) {
+      const targetX = ball.x - PLAYER_WIDTH / 2;
+      const diff = targetX - p2.x;
+      const speed = PLAYER_SPEED * 0.78;
+
+      if (Math.abs(diff) > 5) {
+        p2.vx = diff > 0 ? speed : -speed;
+        p2.facingRight = diff > 0;
       } else {
-        p.x = Math.max(NET_X + PLAYER_RADIUS + 5, Math.min(CANVAS_WIDTH - PLAYER_RADIUS - 5, p.x));
+        p2.vx = 0;
       }
 
-      // Hit timer
-      if (p.hitTimer > 0) p.hitTimer--;
-      else p.hitting = false;
-    };
-
-    const computeAI = (p: Player, ball: Ball) => {
-      // AI logic: move toward ball
-      const targetX = ball.x;
-      const diff = targetX - p.x;
-      const moveRight = diff > 20;
-      const moveLeft = diff < -20;
-      const jump = ball.vy < 0 && ball.y < GROUND_Y - 100 && Math.abs(ball.x - p.x) < 100 && p.onGround;
-      updatePlayer(p, moveLeft, moveRight, jump);
-    };
-
-    const checkBallPlayerCollision = (p: Player, ball: Ball) => {
-      const dx = ball.x - p.x;
-      const dy = ball.y - p.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const minDist = PLAYER_RADIUS + BALL_RADIUS;
-      if (dist < minDist) {
-        const nx = dx / dist;
-        const ny = dy / dist;
-        const relVx = ball.vx - p.vx;
-        const relVy = ball.vy - p.vy;
-        const dot = relVx * nx + relVy * ny;
-        if (dot < 0) {
-          const impulse = -dot * 1.5;
-          ball.vx += impulse * nx;
-          ball.vy += impulse * ny;
-          // Make sure it goes up
-          if (ball.vy > -3) ball.vy = -8;
-          // Cap speed
-          const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-          if (speed > 18) {
-            ball.vx = (ball.vx / speed) * 18;
-            ball.vy = (ball.vy / speed) * 18;
-          }
-          // Push ball out
-          ball.x = p.x + nx * (minDist + 2);
-          ball.y = p.y + ny * (minDist + 2);
-          p.hitting = true;
-          p.hitTimer = 12;
-        }
-      }
-    };
-
-    const gameLoop = () => {
-      const s = stateRef.current;
-      s.time++;
-
-      if (!s.paused && !s.winner) {
-        // Serve countdown
-        if (s.serving) {
-          s.serveTimer--;
-          if (s.serveTimer <= 0) s.serving = false;
-        }
-
-        if (!s.serving) {
-          // Player 1 controls: A/D/W
-          const keys = s.keys;
-          updatePlayer(
-            s.p1,
-            keys["KeyA"] || keys["ArrowLeft"] && false,
-            keys["KeyD"] || keys["ArrowRight"] && false,
-            keys["KeyW"] || keys["Space"] && false
-          );
-          // Fix: only A/D/W for p1, arrows for p2
-          updatePlayer(
-            s.p1,
-            keys["KeyA"],
-            keys["KeyD"],
-            keys["KeyW"]
-          );
-
-          if (mode === "2player") {
-            updatePlayer(s.p2, keys["ArrowLeft"], keys["ArrowRight"], keys["ArrowUp"]);
-          } else {
-            computeAI(s.p2, s.ball);
-          }
-
-          // Ball physics
-          s.ball.vy += GRAVITY;
-          s.ball.x += s.ball.vx;
-          s.ball.y += s.ball.vy;
-
-          // Ball-player collisions
-          checkBallPlayerCollision(s.p1, s.ball);
-          checkBallPlayerCollision(s.p2, s.ball);
-
-          // Net collision
-          const netLeft = NET_X - 4;
-          const netRight = NET_X + 4;
-          const netTop = GROUND_Y - NET_HEIGHT;
-          if (
-            s.ball.x + BALL_RADIUS > netLeft &&
-            s.ball.x - BALL_RADIUS < netRight &&
-            s.ball.y + BALL_RADIUS > netTop
-          ) {
-            if (s.ball.x < NET_X) {
-              s.ball.x = netLeft - BALL_RADIUS - 1;
-              s.ball.vx = Math.abs(s.ball.vx) * -1.1;
-            } else {
-              s.ball.x = netRight + BALL_RADIUS + 1;
-              s.ball.vx = Math.abs(s.ball.vx) * 1.1;
-            }
-            s.ball.vy *= 0.8;
-          }
-
-          // Wall collisions
-          if (s.ball.x - BALL_RADIUS < 0) {
-            s.ball.x = BALL_RADIUS;
-            s.ball.vx = Math.abs(s.ball.vx);
-          }
-          if (s.ball.x + BALL_RADIUS > CANVAS_WIDTH) {
-            s.ball.x = CANVAS_WIDTH - BALL_RADIUS;
-            s.ball.vx = -Math.abs(s.ball.vx);
-          }
-
-          // Ball ceiling
-          if (s.ball.y - BALL_RADIUS < 0) {
-            s.ball.y = BALL_RADIUS;
-            s.ball.vy = Math.abs(s.ball.vy);
-          }
-
-          // Ball hits ground → score
-          if (s.ball.y + BALL_RADIUS >= GROUND_Y) {
-            s.ball.y = GROUND_Y - BALL_RADIUS;
-            const scorer = s.ball.x < NET_X ? "right" : "left";
-            if (scorer === "left") {
-              s.p1.score++;
-              if (s.p1.score >= MAX_SCORE) {
-                s.winner = s.p1.name;
-                setWinner(s.p1.name);
-              } else {
-                resetRound("right");
-              }
-            } else {
-              s.p2.score++;
-              if (s.p2.score >= MAX_SCORE) {
-                s.winner = s.p2.name;
-                setWinner(s.p2.name);
-              } else {
-                resetRound("left");
-              }
-            }
-          }
+      // Jump if ball is coming and low enough to hit
+      const ballOnRightSide = ball.x > NET_X + 10;
+      const ballApproaching = ball.vx < 0 || (ball.x > NET_X + 50 && ball.y < GROUND_Y - 30);
+      if (ballOnRightSide && ballApproaching && p2.onGround && ball.y < GROUND_Y - 60) {
+        if (Math.abs(ball.x - (p2.x + PLAYER_WIDTH / 2)) < 100) {
+          p2.vy = JUMP_FORCE;
+          p2.onGround = false;
         }
       }
 
-      // Draw
-      drawBeachBackground(ctx, s.time);
+      // Hit the ball
+      if (ballOnRightSide) {
+        tryHit(p2, ball, 1.05);
+      }
+    }
+
+    function awardPoint(scorer: "left" | "right") {
+      const s = state;
+      if (scorer === "left") {
+        s.p1.score++;
+        spawnParticles(200, 300, s.p1.color, 20);
+      } else {
+        s.p2.score++;
+        spawnParticles(600, 300, s.p2.color, 20);
+      }
+
+      if (s.p1.score >= MAX_SCORE || s.p2.score >= MAX_SCORE) {
+        const win = s.p1.score >= MAX_SCORE ? s.p1.name : s.p2.name;
+        setWinner(win);
+        setGameMode("gameover");
+        return;
+      }
+
+      s.serving = scorer;
+      s.rallyActive = false;
+      s.pointDelay = 80;
+      s.ball = makeBall(scorer);
+      s.p1.x = 160;
+      s.p1.y = GROUND_Y - PLAYER_HEIGHT;
+      s.p1.vx = 0; s.p1.vy = 0; s.p1.onGround = true;
+      s.p2.x = 560;
+      s.p2.y = GROUND_Y - PLAYER_HEIGHT;
+      s.p2.vx = 0; s.p2.vy = 0; s.p2.onGround = true;
+    }
+
+    function updatePhysics() {
+      const s = state;
+      const { p1, p2, ball, keys } = s;
+
+      if (s.pointDelay > 0) {
+        s.pointDelay--;
+        return;
+      }
+
+      s.frameCount++;
+
+      // --- Player 1 input ---
+      if (keys.has("a") || keys.has("A")) { p1.vx = -PLAYER_SPEED; p1.facingRight = false; }
+      else if (keys.has("d") || keys.has("D")) { p1.vx = PLAYER_SPEED; p1.facingRight = true; }
+      else p1.vx = 0;
+
+      if ((keys.has("w") || keys.has("W")) && p1.onGround) {
+        p1.vy = JUMP_FORCE;
+        p1.onGround = false;
+      }
+      if (keys.has(" ") || keys.has("s") || keys.has("S")) {
+        tryHit(p1, ball);
+      }
+
+      // --- Player 2 input or AI ---
+      if (s.mode === "2player") {
+        if (keys.has("ArrowLeft")) { p2.vx = -PLAYER_SPEED; p2.facingRight = false; }
+        else if (keys.has("ArrowRight")) { p2.vx = PLAYER_SPEED; p2.facingRight = true; }
+        else p2.vx = 0;
+
+        if (keys.has("ArrowUp") && p2.onGround) {
+          p2.vy = JUMP_FORCE;
+          p2.onGround = false;
+        }
+        if (keys.has("Enter") || keys.has("ArrowDown")) {
+          tryHit(p2, ball);
+        }
+      } else {
+        computerAI(p2, ball);
+      }
+
+      // Facing direction based on ball
+      if (p1.vx === 0) p1.facingRight = ball.x > p1.x;
+      if (p2.vx === 0) p2.facingRight = ball.x > p2.x;
+
+      // Apply gravity & move players
+      for (const p of [p1, p2]) {
+        p.vy += GRAVITY;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.y >= GROUND_Y - PLAYER_HEIGHT) {
+          p.y = GROUND_Y - PLAYER_HEIGHT;
+          p.vy = 0;
+          p.onGround = true;
+        }
+
+        if (p.hitTimer > 0) p.hitTimer--;
+        if (p.hitTimer === 0) p.hitting = false;
+      }
+
+      // Constrain players to their side
+      p1.x = clamp(p1.x, 10, NET_X - PLAYER_WIDTH - 6);
+      p2.x = clamp(p2.x, NET_X + 6, CANVAS_WIDTH - PLAYER_WIDTH - 10);
+
+      // Ball physics
+      ball.vy += GRAVITY;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      ball.spin += ball.vx * 0.015;
+
+      // Ball trail
+      ball.trail.push({ x: ball.x, y: ball.y });
+      if (ball.trail.length > 10) ball.trail.shift();
+
+      // Ball vs ground
+      if (ball.y + BALL_RADIUS >= GROUND_Y) {
+        ball.y = GROUND_Y - BALL_RADIUS;
+        ball.vy *= -BALL_DAMPING;
+        ball.vx *= 0.85;
+        if (Math.abs(ball.vy) < 1) ball.vy = 0;
+        spawnParticles(ball.x, GROUND_Y, "#D2B48C", 4);
+
+        // Who gets the point
+        setTimeout(() => {
+          if (ball.x < NET_X) awardPoint("right");
+          else awardPoint("left");
+        }, 400);
+      }
+
+      // Ball vs walls
+      if (ball.x - BALL_RADIUS < 0) { ball.x = BALL_RADIUS; ball.vx *= -0.7; }
+      if (ball.x + BALL_RADIUS > CANVAS_WIDTH) { ball.x = CANVAS_WIDTH - BALL_RADIUS; ball.vx *= -0.7; }
+      if (ball.y - BALL_RADIUS < 0) { ball.y = BALL_RADIUS; ball.vy *= -0.7; }
+
+      // Ball vs net
+      const netLeft = NET_X - 4;
+      const netRight = NET_X + 4;
+      const netTop = GROUND_Y - NET_HEIGHT;
+      if (ball.x + BALL_RADIUS > netLeft && ball.x - BALL_RADIUS < netRight && ball.y + BALL_RADIUS > netTop) {
+        if (ball.vy > 0 && ball.y - BALL_RADIUS < netTop + 10) {
+          ball.y = netTop - BALL_RADIUS;
+          ball.vy *= -0.6;
+        } else {
+          if (ball.x < NET_X) { ball.x = netLeft - BALL_RADIUS; ball.vx *= -0.6; }
+          else { ball.x = netRight + BALL_RADIUS; ball.vx *= -0.6; }
+        }
+      }
+
+      // Particles
+      for (let i = state.particles.length - 1; i >= 0; i--) {
+        const pt = state.particles[i];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vy += 0.3;
+        pt.life--;
+        if (pt.life <= 0) state.particles.splice(i, 1);
+      }
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      // Background rendering stored separately so we can cache it
+      drawBackground(ctx);
       drawNet(ctx);
-      drawPlayer(ctx, s.p1);
-      drawPlayer(ctx, s.p2);
-      drawBall(ctx, s.ball);
-      drawScore(ctx, s.p1, s.p2);
-      drawControls(ctx, mode);
+      drawPlayer(ctx, state.p1);
+      drawPlayer(ctx, state.p2);
+      drawBall(ctx, state.ball);
 
-      // Serve message
-      if (s.serving && !s.winner) {
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.fillRect(CANVAS_WIDTH / 2 - 110, CANVAS_HEIGHT / 2 - 30, 220, 60);
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 20px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("Get Ready!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 6);
+      // Particles
+      for (const pt of state.particles) {
+        ctx.globalAlpha = pt.life / 30;
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.globalAlpha = 1;
 
-      // Winner overlay
-      if (s.winner) {
-        ctx.fillStyle = "rgba(0,0,0,0.6)";
-        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        ctx.fillStyle = "#FFE566";
-        ctx.font = "bold 42px Arial";
+      drawHUD(ctx, state.p1, state.p2, state.mode);
+      drawControls(ctx, state.mode);
+
+      // Point delay message
+      if (state.pointDelay > 40) {
+        ctx.fillStyle = "rgba(0,0,0,0.55)";
+        ctx.beginPath();
+        ctx.roundRect(CANVAS_WIDTH / 2 - 80, CANVAS_HEIGHT / 2 - 24, 160, 48, 10);
+        ctx.fill();
+        ctx.fillStyle = "#FFD700";
+        ctx.font = "bold 22px Arial";
         ctx.textAlign = "center";
-        ctx.fillText("🏆 " + s.winner + " Wins!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
-        ctx.fillStyle = "#fff";
-        ctx.font = "20px Arial";
-        ctx.fillText("Final Score: " + s.p1.score + " - " + s.p2.score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 25);
+        ctx.fillText("POINT!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 8);
       }
+    }
 
-      animRef.current = requestAnimationFrame(gameLoop);
+    let running = true;
+    function loop() {
+      if (!running) return;
+      updatePhysics();
+      render();
+      animFrameRef.current = requestAnimationFrame(loop);
+    }
+
+    loop();
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(animFrameRef.current);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-
-    animRef.current = requestAnimationFrame(gameLoop);
-    return () => cancelAnimationFrame(animRef.current);
-  }, [mode, resetRound]);
-
-  const handleRestart = () => {
-    const s = stateRef.current;
-    s.p1 = initPlayer("left", "Player 1", "#e74c3c");
-    s.p2 = initPlayer("right", mode === "2player" ? "Player 2" : "Computer", "#2980b9");
-    s.ball = initBall(null);
-    s.winner = null;
-    s.serving = true;
-    s.serveTimer = 90;
-    setWinner(null);
-  };
+  }, [gameMode]);
 
   return (
-    <div className="relative flex flex-col items-center">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        style={{ borderRadius: "12px", boxShadow: "0 8px 32px rgba(0,0,0,0.4)", border: "3px solid rgba(255,255,255,0.2)" }}
-      />
-      <div className="flex gap-4 mt-4">
-        <button
-          onClick={handleRestart}
-          className="px-5 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-lg shadow transition"
-        >
-          Restart Game
-        </button>
-        <button
-          onClick={onBack}
-          className="px-5 py-2 bg-white/20 hover:bg-white/30 text-white font-bold rounded-lg shadow transition"
-        >
-          Main Menu
-        </button>
-      </div>
-      {winner && (
-        <div className="mt-3 text-yellow-300 font-bold text-xl animate-bounce">
-          {winner} is the Champion!
+    <div style={{ fontFamily: "Arial, sans-serif", background: "#1a1a2e", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      {gameMode === "menu" && (
+        <div style={{ textAlign: "center", color: "#fff" }}>
+          <div style={{ fontSize: 52, marginBottom: 8 }}>🏐</div>
+          <h1 style={{ fontSize: 36, fontWeight: "bold", color: "#FFD700", textShadow: "0 0 20px rgba(255,215,0,0.5)", marginBottom: 4 }}>
+            NYC VOLLEYBALL
+          </h1>
+          <p style={{ color: "#aaa", marginBottom: 32, fontSize: 14 }}>Animated · Physics-based · New York Style</p>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={() => startGame("2player")}
+              style={{ padding: "14px 32px", background: "linear-gradient(135deg, #FF6B35, #FF4500)", border: "none", borderRadius: 10, color: "#fff", fontSize: 18, fontWeight: "bold", cursor: "pointer", boxShadow: "0 4px 20px rgba(255,107,53,0.4)" }}
+            >
+              👥 2 Players
+            </button>
+            <button
+              onClick={() => startGame("vs-computer")}
+              style={{ padding: "14px 32px", background: "linear-gradient(135deg, #4ECDC4, #00B4D8)", border: "none", borderRadius: 10, color: "#fff", fontSize: 18, fontWeight: "bold", cursor: "pointer", boxShadow: "0 4px 20px rgba(78,205,196,0.4)" }}
+            >
+              🤖 vs Computer
+            </button>
+          </div>
+          <div style={{ marginTop: 32, background: "rgba(255,255,255,0.07)", borderRadius: 12, padding: "16px 24px", display: "inline-block", textAlign: "left" }}>
+            <p style={{ color: "#FFD700", fontWeight: "bold", marginBottom: 8 }}>Controls</p>
+            <p style={{ color: "#ccc", fontSize: 13 }}>Player 1: <b style={{ color: "#FF6B35" }}>A/D</b> = Move &nbsp; <b style={{ color: "#FF6B35" }}>W</b> = Jump &nbsp; <b style={{ color: "#FF6B35" }}>Space/S</b> = Hit</p>
+            <p style={{ color: "#ccc", fontSize: 13, marginTop: 4 }}>Player 2: <b style={{ color: "#4ECDC4" }}>←/→</b> = Move &nbsp; <b style={{ color: "#4ECDC4" }}>↑</b> = Jump &nbsp; <b style={{ color: "#4ECDC4" }}>Enter/↓</b> = Hit</p>
+            <p style={{ color: "#888", fontSize: 12, marginTop: 8 }}>First to {MAX_SCORE} points wins!</p>
+          </div>
+        </div>
+      )}
+
+      {(gameMode === "2player" || gameMode === "vs-computer") && (
+        <div style={{ position: "relative" }}>
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            style={{ display: "block", borderRadius: 12, boxShadow: "0 8px 40px rgba(0,0,0,0.7)", border: "2px solid rgba(255,215,0,0.3)", maxWidth: "100%", maxHeight: "80vh" }}
+          />
+          <button
+            onClick={() => setGameMode("menu")}
+            style={{ position: "absolute", top: 12, right: 56, padding: "6px 14px", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, color: "#fff", fontSize: 12, cursor: "pointer" }}
+          >
+            Menu
+          </button>
+        </div>
+      )}
+
+      {gameMode === "gameover" && (
+        <div style={{ textAlign: "center", color: "#fff" }}>
+          <div style={{ fontSize: 56, marginBottom: 8 }}>🏆</div>
+          <h2 style={{ fontSize: 40, fontWeight: "bold", color: "#FFD700", textShadow: "0 0 30px rgba(255,215,0,0.6)", marginBottom: 8 }}>
+            {winner} WINS!
+          </h2>
+          <p style={{ color: "#aaa", marginBottom: 28, fontSize: 16 }}>
+            {stateRef.current?.p1.score} – {stateRef.current?.p2.score}
+          </p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
+            <button
+              onClick={() => startGame(stateRef.current?.mode === "vs-computer" ? "vs-computer" : "2player")}
+              style={{ padding: "12px 28px", background: "linear-gradient(135deg, #FFD700, #FF8C00)", border: "none", borderRadius: 10, color: "#1a1a2e", fontSize: 16, fontWeight: "bold", cursor: "pointer" }}
+            >
+              Play Again
+            </button>
+            <button
+              onClick={() => setGameMode("menu")}
+              style={{ padding: "12px 28px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 10, color: "#fff", fontSize: 16, cursor: "pointer" }}
+            >
+              Main Menu
+            </button>
+          </div>
         </div>
       )}
     </div>
