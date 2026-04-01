@@ -1,4 +1,4 @@
-import VolleyballGame from "@/game/VolleyballGame";
+import VolleyballGame from "@/pages/VolleyballGame";
 
 function App() {
   return <VolleyballGame />;
