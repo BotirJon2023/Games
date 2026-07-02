@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output/>
+    <orderEntry type="inheritedJdk"/>
+    <content url="file://$MODULE_DIR$/">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false"/>
+      <excludeFolder url="file://$MODULE_DIR$/.gradle"/>
+      <excludeFolder url="file://$MODULE_DIR$/build"/>
+    </content>
+    <orderEntry type="sourceFolder" forTests="false"/>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-desktop/3.6.1-stable/a09230b60616779b1f4d8bc2ebf42ddd736c276a/jme3-desktop-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-lwjgl3/3.6.1-stable/deef87277aa4127826741d9c64c413870949a75c/jme3-lwjgl3-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-jbullet/3.6.1-stable/a9a96ba4c39383ab7e8bef514577f37985d926fa/jme3-jbullet-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-effects/3.6.1-stable/6fc15dc69115f205c9beca230b5b490f3995a1c7/jme3-effects-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-plugins/3.6.1-stable/3fdd7124715d9afc408addd0a21b49a5f73e0fb6/jme3-plugins-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-terrain/3.6.1-stable/a9bf890743f3c7b804d748ec3f8fb3bd78654887/jme3-terrain-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.jmonkeyengine/jme3-core/3.6.1-stable/8ebbe54ee193cfe301b625769311e41b61d1def4/jme3-core-3.6.1-stable.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/757920418805fb90bfebb3d46b1d9e7669fca2eb/lwjgl-glfw-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/877e17e39ebcd58a9c956dc3b5b777813de0873a/lwjgl-jemalloc-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/ae5357ed6d934546d3533993ea84c0cfb75eed95/lwjgl-openal-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opencl/3.3.2/25cefb263d7da6d3328aab9db41b6d1ea256a134/lwjgl-opencl-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/ee8e95be0b438602038bc1f02dc5e3d011b1b216/lwjgl-opengl-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/4421d94af68e35dcaa31737a6fc59136a1e61b94/lwjgl-3.3.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/com.github.stephengold/jbullet/1.0.2/c9959b454fd8ee02112397bdc6b92864e5745e9e/jbullet-1.0.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/javax.vecmath/vecmath/1.5.2/fd17bc3e67f909573dfc039d8e2abecf407c4e27/vecmath-1.5.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.9.1/2cc2131b98ebfb04e2b2c7dfb84431f4045096b/gson-2.9.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/1251e3cb7e5d6159334cfb9244f789ce992f03b/lwjgl-glfw-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/17e1f9ec031ef72c2f7825c38eeb3a79c4d8bb17/lwjgl-glfw-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/766bb0e8e829598b1c8052fd8173c62af741c52/lwjgl-glfw-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/5907d9a6b7c44fb0612a63bb1cff5992588f65be/lwjgl-glfw-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/bc49e64bae0f7ff103a312ee8074a34c4eb034c7/lwjgl-glfw-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/8223ba1b757c43624f03b09ab9d9228c7f6db001/lwjgl-glfw-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/7e35644de1bf324ca9b7d52acd6e0b8d9a6da4ad/lwjgl-glfw-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/db886c1f9e313c3fa2a25543b99ccd250d3f9fb5/lwjgl-jemalloc-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/9b07558f81a5d54dfaeb861bab3ccc86bb4477c9/lwjgl-jemalloc-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/2bc33176cdfabf34a63df154b80914e8f433316b/lwjgl-jemalloc-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/9367437ce192e4d6f5725d53d85520644c0b0d6f/lwjgl-jemalloc-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/5249f18a9ae20ea86c5816bc3107a888ce7a17d2/lwjgl-jemalloc-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/959ea96ea27cd1ee45943123140fdb55c49e961f/lwjgl-jemalloc-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/fe75e1cad7ac1f7af4a071c4b83e39d11b65a1cc/lwjgl-jemalloc-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/e74f299a602192faaf14b917632e4cbbb493c940/lwjgl-openal-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/21fcb44d32ccf101017ec939fc740197677557d5/lwjgl-openal-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/650981780b8bbfb3ce43657b22ec8e77bfb1f37a/lwjgl-openal-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/7c82bbc33ef49ee4094b216c940db564b2998224/lwjgl-openal-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/22408980cc579709feaf9acb807992d3ebcf693f/lwjgl-openal-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/56fa16d15039142634e3a6d97d638b56679be821/lwjgl-openal-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/7b43d16069bdabc9ca0923ec8756a51c5d61cb75/lwjgl-openal-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/83cd34469d4e0bc335bf74c7f62206530a9480bf/lwjgl-opengl-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/22fa4149159154b24f6c1bd46a342d4958a9fba1/lwjgl-opengl-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/b8368430ef0d91a5acbc6fbfa47b20c3ec083aec/lwjgl-opengl-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/821f9a2d1d583c44893f42b96f6977682b48a99b/lwjgl-opengl-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/bb9eb56da6d1d549d6a767218e675e36bc568eb9/lwjgl-opengl-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/5141389ca737369f317b1288a570534c40db9cf/lwjgl-opengl-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/baadfd67936dcd7e0334dd3a9cf8dd13a0bcb009/lwjgl-opengl-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/a55169ced70ffcd15f2162daf4a9c968578f6cd5/lwjgl-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/ed495259b2c8f068794da0ffedfa7ae7c130b3c5/lwjgl-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/767684973f259d97e7dc66a125eb153986f177e7/lwjgl-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/afcbfaaa46f217e98a6da4208550f71de1f2a225/lwjgl-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/8bd89332c90a90e6bc4aa997a25c05b7db02c90a/lwjgl-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/3256dce7fa36d6b572afa5e5730f532cf987f3bf/lwjgl-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/319eea74a8829ce92fd54ce7c684b6b6557c05bb/lwjgl-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/com.github.stephengold/stack-alloc/1.0.2/13cbb10c01ec09d0f5879f988946a97998175dfc/stack-alloc-1.0.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/1251e3cb7e5d6159334cfb9244f789ce992f03b/lwjgl-glfw-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/17e1f9ec031ef72c2f7825c38eeb3a79c4d8bb17/lwjgl-glfw-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/766bb0e8e829598b1c8052fd8173c62af741c52/lwjgl-glfw-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/5907d9a6b7c44fb0612a63bb1cff5992588f65be/lwjgl-glfw-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/bc49e64bae0f7ff103a312ee8074a34c4eb034c7/lwjgl-glfw-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/8223ba1b757c43624f03b09ab9d9228c7f6db001/lwjgl-glfw-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.2/7e35644de1bf324ca9b7d52acd6e0b8d9a6da4ad/lwjgl-glfw-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/db886c1f9e313c3fa2a25543b99ccd250d3f9fb5/lwjgl-jemalloc-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/9b07558f81a5d54dfaeb861bab3ccc86bb4477c9/lwjgl-jemalloc-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/2bc33176cdfabf34a63df154b80914e8f433316b/lwjgl-jemalloc-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/9367437ce192e4d6f5725d53d85520644c0b0d6f/lwjgl-jemalloc-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/5249f18a9ae20ea86c5816bc3107a888ce7a17d2/lwjgl-jemalloc-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/959ea96ea27cd1ee45943123140fdb55c49e961f/lwjgl-jemalloc-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.2/fe75e1cad7ac1f7af4a071c4b83e39d11b65a1cc/lwjgl-jemalloc-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/e74f299a602192faaf14b917632e4cbbb493c940/lwjgl-openal-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/21fcb44d32ccf101017ec939fc740197677557d5/lwjgl-openal-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/650981780b8bbfb3ce43657b22ec8e77bfb1f37a/lwjgl-openal-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/7c82bbc33ef49ee4094b216c940db564b2998224/lwjgl-openal-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/22408980cc579709feaf9acb807992d3ebcf693f/lwjgl-openal-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/56fa16d15039142634e3a6d97d638b56679be821/lwjgl-openal-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.2/7b43d16069bdabc9ca0923ec8756a51c5d61cb75/lwjgl-openal-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/83cd34469d4e0bc335bf74c7f62206530a9480bf/lwjgl-opengl-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/22fa4149159154b24f6c1bd46a342d4958a9fba1/lwjgl-opengl-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/b8368430ef0d91a5acbc6fbfa47b20c3ec083aec/lwjgl-opengl-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/821f9a2d1d583c44893f42b96f6977682b48a99b/lwjgl-opengl-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/bb9eb56da6d1d549d6a767218e675e36bc568eb9/lwjgl-opengl-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/5141389ca737369f317b1288a570534c40db9cf/lwjgl-opengl-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.2/baadfd67936dcd7e0334dd3a9cf8dd13a0bcb009/lwjgl-opengl-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/a55169ced70ffcd15f2162daf4a9c968578f6cd5/lwjgl-3.3.2-natives-windows.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/ed495259b2c8f068794da0ffedfa7ae7c130b3c5/lwjgl-3.3.2-natives-windows-x86.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/767684973f259d97e7dc66a125eb153986f177e7/lwjgl-3.3.2-natives-linux.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/afcbfaaa46f217e98a6da4208550f71de1f2a225/lwjgl-3.3.2-natives-linux-arm32.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/8bd89332c90a90e6bc4aa997a25c05b7db02c90a/lwjgl-3.3.2-natives-linux-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/3256dce7fa36d6b572afa5e5730f532cf987f3bf/lwjgl-3.3.2-natives-macos.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.2/319eea74a8829ce92fd54ce7c684b6b6557c05bb/lwjgl-3.3.2-natives-macos-arm64.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/botirjonruzmetov/.gradle/caches/modules-2/files-2.1/com.github.stephengold/stack-alloc/1.0.2/13cbb10c01ec09d0f5879f988946a97998175dfc/stack-alloc-1.0.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+  </component>
+  <component name="ModuleRootManager"/>
+</module>

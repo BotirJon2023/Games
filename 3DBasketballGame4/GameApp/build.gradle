@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            exclude 'GameApp.java'   // old stub — real code is in com/example/basket3d/
+            exclude 'Main.java'      // IntelliJ default placeholder, not needed
+        }
+    }
+}
+
+application {
+    mainClass = 'com.example.basket3d.GameApp'
+    // macOS needs the JVM opened on the main thread for windowed apps
+    applicationDefaultJvmArgs = ['-XstartOnFirstThread']
+}
+
+def jme3 = '3.6.1-stable'
+
+dependencies {
+    implementation "org.jmonkeyengine:jme3-core:${jme3}"
+    implementation "org.jmonkeyengine:jme3-desktop:${jme3}"
+    implementation "org.jmonkeyengine:jme3-lwjgl3:${jme3}"
+    implementation "org.jmonkeyengine:jme3-jbullet:${jme3}"
+    implementation "org.jmonkeyengine:jme3-effects:${jme3}"
+    implementation "org.jmonkeyengine:jme3-plugins:${jme3}"
+}
+
+repositories {
+    mavenCentral()
+}
+
+idea {
+    module {
+        // Gradle writes all dependency jars into the .iml so IntelliJ needs no sync
+        downloadJavadoc = false
+        downloadSources = false
+    }
+}
