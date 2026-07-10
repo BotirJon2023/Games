@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Basketball Championship</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen">
+      <div class="title-container">
+        <h1 class="game-title">3D BASKETBALL</h1>
+        <h2 class="game-subtitle">CHAMPIONSHIP</h2>
+      </div>
+
+      <div class="menu-container">
+        <div class="mode-selection">
+          <button id="twoPlayerBtn" class="menu-btn primary">
+            <span class="btn-icon">👥</span>
+            <span class="btn-text">2 PLAYERS</span>
+            <span class="btn-desc">Local multiplayer</span>
+          </button>
+          <button id="vsComputerBtn" class="menu-btn secondary">
+            <span class="btn-icon">🤖</span>
+            <span class="btn-text">VS COMPUTER</span>
+            <span class="btn-desc">Challenge the AI</span>
+          </button>
+        </div>
+
+        <div id="difficultySelector" class="difficulty-selector hidden">
+          <h3>SELECT DIFFICULTY</h3>
+          <div class="difficulty-buttons">
+            <button data-difficulty="easy" class="diff-btn">
+              <span class="diff-name">ROOKIE</span>
+              <span class="diff-stars">★☆☆</span>
+            </button>
+            <button data-difficulty="medium" class="diff-btn">
+              <span class="diff-name">PRO</span>
+              <span class="diff-stars">★★☆</span>
+            </button>
+            <button data-difficulty="hard" class="diff-btn">
+              <span class="diff-name">LEGEND</span>
+              <span class="diff-stars">★★★</span>
+            </button>
+          </div>
+        </div>
+
+        <button id="levelSelectBtn" class="menu-btn outline">
+          <span class="btn-icon">🏆</span>
+          <span class="btn-text">LEVEL SELECT</span>
+        </button>
+
+        <button id="leaderboardBtn" class="menu-btn outline">
+          <span class="btn-icon">📊</span>
+          <span class="btn-text">LEADERBOARD</span>
+        </button>
+      </div>
+
+      <div class="controls-hint">
+        <p>Player 1: <kbd>A</kbd><kbd>D</kbd> to aim | <kbd>W</kbd><kbd>S</kbd> power | <kbd>SPACE</kbd> shoot</p>
+        <p>Player 2: <kbd>←</kbd><kbd>→</kbd> to aim | <kbd>↑</kbd><kbd>↓</kbd> power | <kbd>ENTER</kbd> shoot</p>
+      </div>
+    </div>
+
+    <!-- Level Select Screen -->
+    <div id="levelSelectScreen" class="screen hidden">
+      <div class="screen-header">
+        <button id="backToMenu" class="back-btn">← BACK</button>
+        <h2>SELECT LEVEL</h2>
+      </div>
+      <div id="levelGrid" class="level-grid"></div>
+    </div>
+
+    <!-- Leaderboard Screen -->
+    <div id="leaderboardScreen" class="screen hidden">
+      <div class="screen-header">
+        <button id="backFromLeaderboard" class="back-btn">← BACK</button>
+        <h2>LEADERBOARD</h2>
+      </div>
+      <div id="leaderboardContent" class="leaderboard-content"></div>
+    </div>
+
+    <!-- Game Container -->
+    <div id="gameContainer" class="hidden">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Game HUD -->
+      <div id="gameHUD">
+        <div class="hud-left">
+          <div class="player-score" id="player1Score">
+            <span class="player-label">PLAYER 1</span>
+            <span class="score-value">0</span>
+          </div>
+        </div>
+
+        <div class="hud-center">
+          <div class="level-indicator">
+            <span id="currentLevel">LEVEL 1</span>
+          </div>
+          <div class="shot-clock">
+            <span id="shotClock">30</span>
+          </div>
+          <div class="round-indicator">
+            <span id="currentRound">ROUND 1/5</span>
+          </div>
+        </div>
+
+        <div class="hud-right">
+          <div class="player-score" id="player2Score">
+            <span class="player-label" id="player2Label">PLAYER 2</span>
+            <span class="score-value">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power Meter -->
+      <div id="powerMeterContainer">
+        <div class="power-label">POWER</div>
+        <div class="power-meter">
+          <div id="powerFill" class="power-fill"></div>
+        </div>
+        <div class="power-value"><span id="powerValue">50</span>%</div>
+      </div>
+
+      <!-- Angle Indicator -->
+      <div id="angleIndicator">
+        <div class="angle-label">ANGLE</div>
+        <div class="angle-display">
+          <div id="angleArrow" class="angle-arrow"></div>
+        </div>
+        <div class="angle-value"><span id="angleValue">45</span>°</div>
+      </div>
+
+      <!-- Current Player Indicator -->
+      <div id="turnIndicator">
+        <span id="currentPlayerName">PLAYER 1</span>'S TURN
+      </div>
+
+      <!-- Shot Result Popup -->
+      <div id="shotResult" class="shot-result hidden">
+        <span class="result-text"></span>
+        <span class="result-points"></span>
+      </div>
+
+      <!-- Pause Menu -->
+      <div id="pauseMenu" class="overlay hidden">
+        <div class="pause-content">
+          <h2>PAUSED</h2>
+          <button id="resumeBtn" class="menu-btn primary">RESUME</button>
+          <button id="restartBtn" class="menu-btn secondary">RESTART</button>
+          <button id="quitBtn" class="menu-btn outline">QUIT TO MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="screen hidden">
+      <div class="game-over-content">
+        <h1 class="game-over-title">GAME OVER</h1>
+        <div class="final-scores">
+          <div class="final-player">
+            <span class="final-label">PLAYER 1</span>
+            <span id="finalScore1" class="final-score">0</span>
+          </div>
+          <div class="vs-divider">VS</div>
+          <div class="final-player">
+            <span class="final-label" id="finalLabel2">PLAYER 2</span>
+            <span id="finalScore2" class="final-score">0</span>
+          </div>
+        </div>
+        <div id="winnerAnnouncement" class="winner-announcement"></div>
+        <div class="game-over-buttons">
+          <button id="playAgainBtn" class="menu-btn primary">PLAY AGAIN</button>
+          <button id="menuBtn" class="menu-btn outline">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
