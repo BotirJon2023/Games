@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff2bd6;
+  --neon-green: #0fff8b;
+  --neon-yellow: #ffe600;
+  --neon-orange: #ff6b1a;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'Rajdhani', sans-serif;
+  background: #05050f;
+  overflow: hidden;
+}
+
+.font-display {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.neon-text-cyan {
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
+}
+
+.neon-text-pink {
+  color: #ff2bd6;
+  text-shadow: 0 0 8px rgba(255, 43, 214, 0.8), 0 0 20px rgba(255, 43, 214, 0.5), 0 0 40px rgba(255, 43, 214, 0.3);
+}
+
+.neon-text-green {
+  color: #0fff8b;
+  text-shadow: 0 0 8px rgba(15, 255, 139, 0.8), 0 0 20px rgba(15, 255, 139, 0.5);
+}
+
+.neon-text-yellow {
+  color: #ffe600;
+  text-shadow: 0 0 8px rgba(255, 230, 0, 0.8), 0 0 20px rgba(255, 230, 0, 0.5);
+}
+
+.neon-border-cyan {
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.6) !important;
+}
+
+.neon-border-pink {
+  box-shadow: 0 0 10px rgba(255, 43, 214, 0.5), inset 0 0 10px rgba(255, 43, 214, 0.1);
+  border-color: rgba(255, 43, 214, 0.6) !important;
+}
+
+.neon-border-green {
+  box-shadow: 0 0 10px rgba(15, 255, 139, 0.5), inset 0 0 10px rgba(15, 255, 139, 0.1);
+  border-color: rgba(15, 255, 139, 0.6) !important;
+}
+
+@keyframes grid-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(40px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes float-up {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-60px); opacity: 0; }
+}
+
+@keyframes count-bounce {
+  0% { transform: scale(0.3); opacity: 0; }
+  40% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes title-glow {
+  0%, 100% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(255, 43, 214, 0.4); }
+  50% { text-shadow: 0 0 30px rgba(255, 43, 214, 0.8), 0 0 60px rgba(0, 240, 255, 0.4); }
+}
+
+@keyframes speed-lines {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100px); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.animate-count-bounce {
+  animation: count-bounce 0.5s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-title-glow {
+  animation: title-glow 3s ease-in-out infinite;
+}
+
+.scanline {
+  background-image: linear-gradient(rgba(0, 240, 255, 0.04) 50%, transparent 50%);
+  background-size: 100% 4px;
+}
